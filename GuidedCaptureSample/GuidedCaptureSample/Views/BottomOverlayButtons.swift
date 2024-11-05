@@ -388,29 +388,43 @@ private struct AutoCaptureToggle: View {
 
     var body: some View {
         Button(action: {
-            session.isAutoCaptureEnabled.toggle()
+          switch(session.state) {
+          case .ready:
+            let isDetecting = session.startDetecting()
+            if isDetecting {
+              logger.info("Start detecting")
+            } else {
+              logger.error("ERROR: Did not start detecting!")
+            }
+          case .capturing:
+            session.startCapturing()
+          default:
+            break
+            // session.isAutoCaptureEnabled.toggle()
+          }
         }, label: {
             HStack(spacing: 5) {
-                if session.isAutoCaptureEnabled {
-                    Image(systemName: "a.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 15)
-                        .foregroundStyle(.black)
-                } else {
-                    Image(systemName: "circle.slash.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 15)
-                        .foregroundStyle(.black)
-                }
+              switch(session.state) {
+              case .ready, .capturing:
+                Image(systemName: "a.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 15)
+                    .foregroundStyle(.black)
+              default:
+                Image(systemName: "circle.slash.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 15)
+                    .foregroundStyle(.black)
+              }
                 Text("Auto")
                     .font(.footnote)
                     .foregroundStyle(.black)
             }
             .padding(.all, 5)
             .background(.ultraThinMaterial)
-            .background(session.isAutoCaptureEnabled ? .white : .clear)
+            .background([.ready, .capturing].contains(session.state) ? .white : .clear)
             .cornerRadius(15)
         })
     }
