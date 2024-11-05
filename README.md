@@ -1,3 +1,7 @@
+# Fixed Sample for using the Object Capture
+
+Use the ```session.state``` instead of ```session.isAutoCaptureEnabled.toggle``` to check the current capture state.
+
 # Scanning objects using Object Capture
 
 Implement a full scanning workflow for capturing objects on iOS devices.
