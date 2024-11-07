@@ -103,8 +103,8 @@ class AppDataModel: Identifiable {
   
   deinit {
     NotificationCenter.default.removeObserver(self)
-    DispatchQueue.main.async {
-      self.detachListeners()
+    DispatchQueue.main.async { [weak self] in
+      self?.detachListeners()
     }
   }
   
